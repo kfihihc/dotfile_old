@@ -344,3 +344,13 @@ endfunction
 " autocmd BufWritePre <buffer> :call Uncrustify('java')
 " }}}2
 " }}}
+
+" => pulgin setup with vimrc.plugin {{{
+if filereadable(expand("~/.vimrc.local"))
+    if has(mac || linux)
+        source ~/.vimrc.plugin
+    elseif has(win32)
+        source ~/_vimrc.plugin
+    endif
+endif
+" }}}
