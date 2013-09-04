@@ -352,10 +352,6 @@ endfunction
 " => plugin setup {{{
 
 " plugin abstract key map{{{2
-nnoremap [dwm] <Nop>
-map <F4> [dwm]
-nnoremap [DoxygenToolkit] <Nop>
-map <F6> [DoxygenToolkit]
 nnoremap [DrawIt] <Nop>
 map <F10> [DrawIt]
 noremap [emotion] <Nop>
@@ -375,9 +371,16 @@ nmap <F9> :!sdcv "<cword>" <C-R>=expand("<cword>")<CR><CR>
 imap <F9> <ESC>:!sdcv "<cword>" <C-R>=expand("<cword>")<CR><CR>
 "}}}2
 
-" => comment {{{2
+" => NerdComment and NerdTree{{{2
+let NERDSpaceDelims=1
 
-" }}}
+let NERDTreeWinPos = "left" "where NERD tree window is placed on the screen
+let NERDTreeWinSize = 30 "size of the NERD tree
+" autocmd VimEnter * NERDTree "启动Vim时自动打开nerdtree
+let NERDTreeShowBookmarks=1
+let NERDTreeChDirMode=2
+nmap <F7> <ESC>:NERDTreeToggle<cr>
+" }}}2
 
 " => CtrlP {{{2
 map <leader>rf :CtrlPMRUFiles<cr>
@@ -399,89 +402,47 @@ let g:ctrlp_user_command = {
   \ }
 "}}}2
 
-" => DoxygenToolkit {{{2
-let g:DoxygenToolkit_briefTag_pre="@Synopsis  "
-let g:DoxygenToolkit_paramTag_pre="@Param "
-let g:DoxygenToolkit_returnTag="@Returns   "
-let g:DoxygenToolkit_blockHeader="--------------------------------------------------------------------------"
-let g:DoxygenToolkit_blockFooter="----------------------------------------------------------------------------"
-let g:DoxygenToolkit_authorName="XiaoBo"
-let g:DoxygenToolkit_licenseTag="License"
-
-map [DoxygenToolkit]a :DoxAuthor<cr>
-map [DoxygenToolkit]f :Dox<cr>
-map [DoxygenToolkit]b :DoxBlock<cr>
-map [DoxygenToolkit]c O/** */<Left><Left>
+" => ack with the silver searcher {{{2
+if executable('ag')
+    let g:ackprg = 'ag --column'
+    nnoremap <leader>a :Ack 
+    " nnoremap [emotion]a :Ack 
+    " nnoremap [emotion]A :AckFile 
+    " Use Ag over Grep
+    set grepprg=ag\ --nogroup\ --nocolor
+    " let Grep_Skip_Dirs = '*.bak .git .DS_Store .bzr .hg *~ RCS CVS SCCS .svn generated'
+    " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+    " let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+endif
 " }}}2
 
-" => DrawIt and slimv {{{2
-""""""""""""""""""""""""""""""
-" => DrawIt
-""""""""""""""""""""""""""""""
-" <leader>di and <leader>ds is default map
-map [DrawIt]s :DIsngl<cr>
-map [DrawIt]d :DIdbl<cr>
-map [DrawIt]b :SetBrush a
+" => TagBar and powerline {{{2
+let g:Powerline_symbols = 'fancy'
+let g:Powerline_colorscheme='solarized256'
+" let g:Powerline_colorscheme='molokai'
+nmap <F8> :TagbarToggle<CR>
+let g:tagbar_ctags_bin='/usr/local/bin/ctags'
+let g:tagbar_autoshowtag = 1
+let g:tagbar_sort = 0
 
-""""""""""""""""""""""""""""""
-" => slimv
-""""""""""""""""""""""""""""""
-" let g:slimv_swank_cmd = '!osascript -e "tell application \"iTerm\""
-" let g:slimv_swank_scheme = '!osascript -e "tell application \"iTerm\""
-let g:scheme_builtin_swank = 1
-let g:slimv_leader='\'
+" for txt
+let tagbar_type_txt = {
+  \ 'ctagstype' : 'txt',
+  \ 'kinds'     : [
+    \ 'c:content',
+    \ 'f:figures',
+    \ 't:tables'
+    \]
+  \}
+" autocmd FileType c,cpp nested :TagbarOpen
+highlight TagbarScope guifg=Green ctermfg=Green
 " }}}2
 
-" => easy motion{{{2
-""""""""""""""""""""""""""""""
-" => easy motion
-""""""""""""""""""""""""""""""
+" => easy motion {{{2
 let g:EasyMotion_leader_key = '[emotion]'
-
-    " Mapping           | Details
-    " ------------------|----------------------------------------------
-    " <Leader>f{char}   | Find {char} to the right. See |f|.
-    " <Leader>F{char}   | Find {char} to the left. See |F|.
-    " <Leader>t{char}   | Till before the {char} to the right. See |t|.
-    " <Leader>T{char}   | Till after the {char} to the left. See |T|.
-    " <Leader>w         | Beginning of word forward. See |w|.
-    " <Leader>W         | Beginning of WORD forward. See |W|.
-    " <Leader>b         | Beginning of word backward. See |b|.
-    " <Leader>B         | Beginning of WORD backward. See |B|.
-    " <Leader>e         | End of word forward. See |e|.
-    " <Leader>E         | End of WORD forward. See |E|.
-    " <Leader>ge        | End of word backward. See |ge|.
-    " <Leader>gE        | End of WORD backward. See |gE|.
-    " <Leader>j         | Line downward. See |j|.
-    " <Leader>k         | Line upward. See |k|.
-    " <Leader>n         | Jump to latest "/" or "?" forward. See |n|.
-    " <Leader>N         | Jump to latest "/" or "?" backward. See |N|.
 " }}}2
 
-" => gundo, NERDcommendter, NERDtree, tablur{{{2
-""""""""""""""""""""""""""""""
-" => gundo
-""""""""""""""""""""""""""""""
-nnoremap <F2> :GundoToggle<CR>
-
-""""""""""""""""""""""""""""""
-"NEnd close the NERD_tree.vim separatelyRDTree plugin
-""""""""""""""""""""""""""""""
-let NERDTreeWinPos = "left" "where NERD tree window is placed on the screen
-let NERDTreeWinSize = 30 "size of the NERD tree
-" autocmd VimEnter * NERDTree "启动Vim时自动打开nerdtree
-let NERDTreeShowBookmarks=1
-let NERDTreeChDirMode=2
-nmap <F7> <ESC>:NERDTreeToggle<cr>
-
-""""""""""""""""""""""""""""""
-" => NERDcommenter
-""""""""""""""""""""""""""""""
-let NERDSpaceDelims=1
-
-""""""""""""""""""""""""""""""
-" => tabular
-""""""""""""""""""""""""""""""
+" => tabular {{{2
 " let g:tabular_loaded = 1
 nmap <leader>tl <ESC>:Tabularize /
 " }}}2
@@ -512,169 +473,27 @@ map rbp :RainbowParenthesesToggle<CR>
 autocmd BufEnter, BufRead *.{lisp,scheme,ss,scm,el,clj} RainbowParenthesesLoadRound
 "}}}2
 
-""""""""""""""""""""""""""""""
-" => Set Calendar
-""""""""""""""""""""""""""""""
-let g:calendar_navi_label = '向上,今天,向下'
-let g:calendar_mruler = '一月,二月,三月,四月,五月,六月,七月,八月,九月,十月,十一月,十二月'
-let g:calendar_wruler = '日 一 二 三 四 五 六'
-let g:calendar_datetime = 'title'
-"NOTE:you can set 'title', 'statusline', '' for this option.
+" => showmarks and woxmarks {{{2 
+let g:showmarks_include='abcdefghijklmnopqrstuvwxyz' . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+let g:showmarks_ignore_type=""
+let g:showmarks_textlower="\t"
+let g:showmarks_textupper="\t"
+let g:showmarks_textother="\t"
+let g:showmarks_auto_toggle = 0
+nnoremap <silent> mo :ShowMarksOn<CR>
+nnoremap <silent> mt :ShowMarksToggle<CR>
 
-" => surround {{{2
-" change surround
-nmap [surround]c cs
-
-"b, B, r, and a are aliases for ), }, ], and >.
-let b:surround_{char2nr("0")} = "(\r)"
-let b:surround_{char2nr("t")} = "`\r`"
-let b:surround_{char2nr("j")} = "\"\r\""
-let b:surround_{char2nr("i")} = "*\r*"
-let b:surround_{char2nr("s")} = "**\r**"
-" (), {}, [], <>
-nmap [surround]b viwSbW
-imap [surround]b <ESC>viwSbWi
-" nmap [surround]0 ds)
-" imap [surround]0 <ESC>ds)
-nmap [surround]B viwSBW
-imap [surround]B <ESC>viwSBWi
-nmap [surround]r viwSrW
-vmap [surround]r viwSrW
-imap [surround]r <ESC>viwSrWi
-nmap [surround]a viwSaW
-imap [surround]a <ESC>viwSaWi
-" ``
-nmap [surround]t viwStW
-imap [surround]t <ESC>viwStWi
-nmap [surround]T ds`
-imap [surround]T <ESC>ds`i
-" ""
-nmap [surround]j viwSrW
-imap [surround]j <ESC>viwSrWi
-nmap [surround]J ds"
-imap [surround]J <ESC>ds"i
-" **
-nmap [surround]i viwSiW
-imap [surround]i <ESC>viwSiWi
-nmap [surround]I dsi
-imap [surround]I <ESC>dsii
-" ** **
-nmap [surround]s viwSsW
-imap [surround]s <ESC>viwSsWi
+let g:wokmarks_do_maps = 0
+let g:wokmarks_pool = "abcdefghijklmnopqrstuvwxyz"
+map mm <Plug>ToggleMarkWok
+map mj <Plug>NextMarkWok
+map mk <Plug>PrevMarkWok
+map <M-Left> <Plug>SetMarkWok
+map <M-Right> <Plug>ToggleMarkWok
+map <M-Up> <Plug>PrevMarkWok
+map <M-Down> <Plug>NextMarkWok
+autocmd User WokmarksChange :ShowMarksOn
 "}}}2
-
-
-""""""""""""""""""""""""""""""
-" => multi cursor
-""""""""""""""""""""""""""""""
-let g:multicursor_quit = "[multicursor]p"
-nnoremap [multicursor]p :<c-u>call MultiCursorPlaceCursor()<cr>
-nnoremap [multicursor]m :<c-u>call MultiCursorManual()<cr>
-nnoremap [multicursor]r :<c-u>call MultiCursorRemoveCursors()<cr>
-xnoremap [multicursor]v :<c-u>call MultiCursorVisual()<cr>
-nnoremap [multicursor]s :<c-u>call MultiCursorSearch('')<cr>
-nnoremap [multicursor]S :<c-u>call MultiCursorSearch('<c-r><c-w>')<cr>
-" xnoremap [multicursor] "*y<Esc>:call MultiCursorSearch('<c-r>=substitute(escape(@*, '\/.*$^~[]'), "\n", '\\n', "g")<cr>')<cr>
-
-""""""""""""""""""""""""""""""
-" => gist-vim
-""""""""""""""""""""""""""""""
-let g:gist_clip_command = 'pbcopy'
-let g:gist_detect_filetype = 1
-
-""""""""""""""""""""""""""""""
-" => grep
-""""""""""""""""""""""""""""""
-" " set grepprg=/usr/bin/grep\ -nH
-" let Grep_Skip_Dirs = '*.bak .git .DS_Store .bzr .hg *~ RCS CVS SCCS .svn generated'
-" let Grep_Path = '/usr/bin/grep'
-" let Fgrep_Path = '/usr/bin/fgrep'
-" let Egrep_Path = '/usr/bin/egrep'
-" let Grep_Xargs_Path = '/usr/bin/xargs'
-" let Grep_Find_Path = '/usr/bin/find'
-" nnoremap <silent> <F2>g :Grep<CR>
-" nnoremap <silent> <F2>f :Fgrep<CR>
-" nnoremap <silent> <F2>e :Egrep<CR>
-" nnoremap <silent> <F2>b :GrepBuffer<CR>
-" nnoremap <silent> <F2>a :GrepAdd<CR>
-" nnoremap <silent> <F2>ba :GrepBufferAdd<CR>
-
-" => Set gtags and gtags-cscope {{{2
-map [Gtags]1 <esc>:!gtags &<cr>
-
-let Gtags_OpenQuickfixWindow = 0
-let Gtags_Auto_Map=0
-
-"nmap <M-[> :Gtags -gi<cr>
-"nmap <M-e> :Gtags -gi<cr><cr><cr>*.[ch]<cr>
-map [Gtags]2 <esc>:Gtags<cr><cr>
-map [Gtags]3 <esc>:Gtags -r <cr><cr>
-
-map [Gtags]n :cn<cr>
-map [Gtags]p :cp<cr>
-map [Gtags]o :Gozilla<CR>
-
-"for cscope
-if has("cscope")
-" set csprg=/usr/local/bin/cscope
-" set csto=1
-" set cst
-" set nocsverb
-" " add any database in current directory
-" if filereadable("cscope.out")
-    " cs add cscope.out
-" endif
-" set csverb
-endif
-
-"inoremap  @o <ESC> :cs find c =expand("")<C-R>
-"nmap c :cs find c =expand("")
-nmap [Gtags]s :cs find s <C-R>=expand("<cword>")<CR><CR>
-nmap [Gtags]g :cs find g <C-R>=expand("<cword>")<CR><CR>
-nmap [Gtags]c :cs find c <C-R>=expand("<cword>")<CR><CR>
-nmap [Gtags]t :cs find t <C-R>=expand("<cword>")<CR><CR>
-nmap [Gtags]e :cs find e <C-R>=expand("<cword>")<CR><CR>
-nmap [Gtags]f :cs find f <C-R>=expand("<cfile>")<CR><CR>
-nmap [Gtags]i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
-nmap [Gtags]d :cs find d <C-R>=expand("<cword>")<CR><CR>
-
-"set Cscope & quickfix
-set cscopequickfix=s-,c-,d-,i-,t-,e-
-"}}}2
-
-""""""""""""""""""""""""""""""
-" => TagBar and powerline
-""""""""""""""""""""""""""""""
-let g:Powerline_symbols = 'fancy'
-let g:Powerline_colorscheme='solarized256'
-nmap <F8> :TagbarToggle<CR>
-let g:tagbar_ctags_bin='/usr/local/bin/ctags'
-let g:tagbar_autoshowtag = 1
-let g:tagbar_sort = 0
-
-" for txt
-let tagbar_type_txt = {
-  \ 'ctagstype' : 'txt',
-  \ 'kinds'     : [
-    \ 'c:content',
-    \ 'f:figures',
-    \ 't:tables'
-    \]
-  \}
-
-" autocmd FileType c,cpp nested :TagbarOpen
-highlight TagbarScope guifg=Green ctermfg=Green
-
-""""""""""""""""""""""""""""""
-" => markdown preview
-"""""""""""""""""""""""""""""""
-" for preview
-let g:markdown_extensions=["md", "markdown", "mkd"]
-
-""""""""""""""""""""""""""""""
-" => markdown preview
-"""""""""""""""""""""""""""""""
-let g:voom_tree_placement = "right"
 
 " => vimwiki {{{2
 let g:vimwiki_use_mouse = 1
@@ -727,37 +546,49 @@ let g:vimwiki_customwiki2html=$HOME.'/.vim/autoload/vimwiki/customwiki2html.sh'
 map <leader>td <Plug>VimwikiToggleListItem
 "}}}2
 
-""""""""""""""""""""""""""""""
-" => vim-pandoc
-""""""""""""""""""""""""""""""
+" => surround {{{2
+" change surround
+nmap [surround]c cs
 
-""""""""""""""""""""""""""""""
-" => vim-shareborad
-""""""""""""""""""""""""""""""
-" let g:shareboard_command = printf('pandoc -Ss --toc -m -c "%s"
-            " \ -r markdown_strict+fenced_code_blocks
-            " \ -w html5',
-            " \ expand("~/Library/Application\ Support/nvALT/custom.css"))
+"b, B, r, and a are aliases for ), }, ], and >.
+let b:surround_{char2nr("0")} = "(\r)"
+let b:surround_{char2nr("t")} = "`\r`"
+let b:surround_{char2nr("j")} = "\"\r\""
+let b:surround_{char2nr("i")} = "*\r*"
+let b:surround_{char2nr("s")} = "**\r**"
+" (), {}, [], <>
+nmap [surround]b viwSbW
+imap [surround]b <ESC>viwSbWi
+" nmap [surround]0 ds)
+" imap [surround]0 <ESC>ds)
+nmap [surround]B viwSBW
+imap [surround]B <ESC>viwSBWi
+nmap [surround]r viwSrW
+vmap [surround]r viwSrW
+imap [surround]r <ESC>viwSrWi
+nmap [surround]a viwSaW
+imap [surround]a <ESC>viwSaWi
+" ``
+nmap [surround]t viwStW
+imap [surround]t <ESC>viwStWi
+nmap [surround]T ds`
+imap [surround]T <ESC>ds`i
+" ""
+nmap [surround]j viwSrW
+imap [surround]j <ESC>viwSrWi
+nmap [surround]J ds"
+imap [surround]J <ESC>ds"i
+" **
+nmap [surround]i viwSiW
+imap [surround]i <ESC>viwSiWi
+nmap [surround]I dsi
+imap [surround]I <ESC>dsii
+" ** **
+nmap [surround]s viwSsW
+imap [surround]s <ESC>viwSsWi
+"}}}2
 
-let g:shareboard_command = printf('pandoc -Ss --toc -m -c "%s"
-            \ -r markdown
-            \ -w html5',
-            \ expand("~/Library/Application Support/nvALT/custom.css"))
-""""""""""""""""""""""""""""""
-" => xptemplate
-""""""""""""""""""""""""""""""
-let g:xptemplate_key ='<D-/>'
-let g:xptemplate_key_pum_only = '<S-Tab>'
-
-""""""""""""""""""""""""""""""
-" => MRU plugin
-""""""""""""""""""""""""""""""
-let MRU_Max_Entries = 400
-map <leader>rf :MRU<CR>
-
-""""""""""""""""""""""""""""""
-" => Minibuffer plugin
-""""""""""""""""""""""""""""""
+" => Minibuffer plugin {{{2
 let g:miniBufExplModSelTarget       = 1
 let g:miniBufExplorerMoreThanOne    = 0
 let g:miniBufExplUseSingleClick     = 1
@@ -773,6 +604,12 @@ let g:bufExplorerSortBy = "name"
 " autocmd BufRead,BufNew :call UMiniBufExplorer
 
 map <leader>u :TMiniBufExplorer<cr>
+"}}}2
+
+" => xptemplate {{{2
+let g:xptemplate_key ='<D-/>'
+let g:xptemplate_key_pum_only = '<S-Tab>'
+"}}}2
 
 " =>  ywvim {{{2
 let g:ywvim_ims=[
@@ -795,83 +632,13 @@ let g:ywvim_conv = ''
 let g:ywvim_lockb = 1 "为 0 时, 在空码是不锁定键盘
 "}}}2
 
-""""""""""""""""""""""""""""""
-" => Dwm.vim
-""""""""""""""""""""""""""""""
-let g:dwm_map_keys='[dwm]'
-map [dwm]n :call DWM_New()<CR>
-map [dwm]c :call DWM_Close()<CR>
-map [dwm]f :call DWM_Focus()<CR>
-map [dwm]m :call DWM_Full()<CR>
-map [dwm]l :call DWM_GrowMaster()<CR>
-map [dwm]h :call DWM_ShrinkMaster()<CR>
-map [dwm], :call DWM_Rotate(1)<CR>
-map [dwm]. :call DWM_Rotate(2)<CR>
-
-"""""""""""""""""""""""""""""""""""""""""""""
-" =>  pydoc.vim and rope.vim and python-mode
-"""""""""""""""""""""""""""""""""""""""""""""
-" " let g:pydoc_cmd = '/usr/bin/pydoc'
-" let g:pydoc_cmd = 'python -m pydoc'
-" let g:pydoc_open_cmd = 'vsplit'
-au BufNewFile,BufRead *.py set filetype=python
-autocmd FileType python let g:pymode_run = 1
-let g:jedi#popup_select_first = 0
-let g:jedi#use_tabs_not_buffers = 0
-let g:jedi#rename_command = "<leader>a"
-let g:jedi#autocompletion_command = "<D-.>"
-" let g:jedi#show_function_definition = "0"
-
-let g:pymode_folding = 1
-" let g:pymode_run_key = '<leader><leader>r'
-" let g:pymode_doc_key = '<leader>k'
-let g:pymode_rope = 0
-" map <C-c>g :call RopeGotoDefinition()
-map <C-/> :call RopeCodeAssist()<cr>
-
-"""""""""""""""""""""""""""""""""""""""""""""
-" => vim-jsmode
-"""""""""""""""""""""""""""""""""""""""""""""
-" Enable jsmode
-au BufEnter,BufNewFile,BufRead *{js} let g:jsmode = 1
-" Manualy set JS interpreter
-" g:jsmode_interpreter
-
-"""""""""""""""""""""""""""""""""""""""""""""
-" =>  ack and The Silver Searcher(ag)
-"""""""""""""""""""""""""""""""""""""""""""""
-let g:ackprg = 'ag --column'
-nnoremap [emotion]a :Ack 
-nnoremap [emotion]A :AckFile 
-
-"""""""""""""""""""""""""""""""""""""""""""""
-" =>  quickrun
-"""""""""""""""""""""""""""""""""""""""""""""
-let b:quickrun_config = {'outputter/buffer/split': 1}
-" let b:quickrun_config = {'outputter/buffer/append': 1}
-
-"""""""""""""""""""""""""""""""""""""""""""""
-" => showmarks and woxmarks 
-"""""""""""""""""""""""""""""""""""""""""""""
-let g:showmarks_include='abcdefghijklmnopqrstuvwxyz' . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-let g:showmarks_ignore_type=""
-let g:showmarks_textlower="\t"
-let g:showmarks_textupper="\t"
-let g:showmarks_textother="\t"
-let g:showmarks_auto_toggle = 0
-nnoremap <silent> mo :ShowMarksOn<CR>
-nnoremap <silent> mt :ShowMarksToggle<CR>
-
-let g:wokmarks_do_maps = 0
-let g:wokmarks_pool = "abcdefghijklmnopqrstuvwxyz"
-map mm <Plug>ToggleMarkWok
-map mj <Plug>NextMarkWok
-map mk <Plug>PrevMarkWok
-map <M-Left> <Plug>SetMarkWok
-map <M-Right> <Plug>ToggleMarkWok
-map <M-Up> <Plug>PrevMarkWok
-map <M-Down> <Plug>NextMarkWok
-autocmd User WokmarksChange :ShowMarksOn
+" => Set Calendar {{{2
+let g:calendar_navi_label = '向上,今天,向下'
+let g:calendar_mruler = '一月,二月,三月,四月,五月,六月,七月,八月,九月,十月,十一月,十二月'
+let g:calendar_wruler = '日 一 二 三 四 五 六'
+let g:calendar_datetime = 'title'
+"NOTE:you can set 'title', 'statusline', '' for this option.
+"}}}2
 
 " => YouCompleteMe {{{2
 let g:ycm_key_invoke_completion ='<D-\>'
@@ -901,19 +668,19 @@ let g:ycm_semantic_triggers =  {
   \ }
 " }}}2
 
-" =>  xmms2 palyer {{{2
-" vimmp
-if has('python')
-  py import os, sys
-  py sys.path.append(os.path.expanduser("/Users/xiaobo/.vim/bundle/vimmp/"))
-  pyf /Users/xiaobo/.vim/bundle/vimmp/main.py
-endif
+" => xmms2 palyer {{{2
+" " vimmp
+" if has('python')
+  " py import os, sys
+  " py sys.path.append(os.path.expanduser("/Users/xiaobo/.vim/bundle/vimmp/"))
+  " pyf /Users/xiaobo/.vim/bundle/vimmp/main.py
+" endif
 
-let g:vimmp_server_type="xmms2"
-nmap <silent> <leader>x :py vimmp_toggle()<cr>
-let g:xmms_window_width=40
-"default is "%artist - %title", %album
-let g:xmms_playlist_format="%title"
+" let g:vimmp_server_type="xmms2"
+" nmap <silent> <leader>x :py vimmp_toggle()<cr>
+" let g:xmms_window_width=40
+" "default is "%artist - %title", %album
+" let g:xmms_playlist_format="%title"
 
 " usage
 " Use <leader>x to toggle the play window.
@@ -941,7 +708,117 @@ let g:xmms_playlist_format="%title"
 "                Only available for XMMS2.
 "}}}2
 
-"}}}
+" => DrawIt {{{2
+" <leader>di and <leader>ds is default map
+map [DrawIt]s :DIsngl<cr>
+map [DrawIt]d :DIdbl<cr>
+map [DrawIt]b :SetBrush a
+"}}}2
+
+" => slimv {{{2
+" let g:slimv_swank_cmd = '!osascript -e "tell application \"iTerm\""
+" let g:slimv_swank_scheme = '!osascript -e "tell application \"iTerm\""
+let g:scheme_builtin_swank = 1
+let g:slimv_leader='\'
+" }}}2
+
+" => pandoc and markdown etc preview {{{2
+" }}}2
+
+" => pydoc.vim and rope.vim and python-mode {{{2
+" " let g:pydoc_cmd = '/usr/bin/pydoc'
+" let g:pydoc_cmd = 'python -m pydoc'
+" let g:pydoc_open_cmd = 'vsplit'
+au BufNewFile,BufRead *.py set filetype=python
+autocmd FileType python let g:pymode_run = 1
+let g:jedi#popup_select_first = 0
+let g:jedi#use_tabs_not_buffers = 0
+let g:jedi#rename_command = "<leader>a"
+let g:jedi#autocompletion_command = "<D-.>"
+" let g:jedi#show_function_definition = "0"
+
+let g:pymode_folding = 1
+" let g:pymode_run_key = '<leader><leader>r'
+" let g:pymode_doc_key = '<leader>k'
+let g:pymode_rope = 0
+" map <C-c>g :call RopeGotoDefinition()
+map <C-/> :call RopeCodeAssist()<cr>
+" }}}2
+
+" => ruby and rails etc {{{2
+" extra rails.vim help
+autocmd User Rails silent! Rnavcommand decorator app/decorators -glob=**/* -suffix=_decorator.rb
+autocmd User Rails silent! Rnavcommand observer app/observers -glob=**/* -suffix=_observer.rb
+autocmd User Rails silent! Rnavcommand feature features -glob=**/* -suffix=.feature
+autocmd User Rails silent! Rnavcommand job app/jobs -glob=**/* -suffix=_job.rb
+autocmd User Rails silent! Rnavcommand mediator app/mediators -glob=**/* -suffix=_mediator.rb
+autocmd User Rails silent! Rnavcommand stepdefinition features/step_definitions -glob=**/* -suffix=_steps.rb
+" }}}2
+
+" => git and gist etc {{{2
+let g:gist_clip_command = 'pbcopy'
+let g:gist_detect_filetype = 1
+
+" map for gitgutter
+let g:gitgutter_enabled = 0
+nmap <leader>g :GitGutterToggle<CR>
+" }}}2
+
+" => Set gtags and gtags-cscope {{{2
+map [Gtags]1 <esc>:!gtags &<cr>
+
+let Gtags_OpenQuickfixWindow = 0
+let Gtags_Auto_Map=0
+
+"nmap <M-[> :Gtags -gi<cr>
+"nmap <M-e> :Gtags -gi<cr><cr><cr>*.[ch]<cr>
+map [Gtags]2 <esc>:Gtags<cr><cr>
+map [Gtags]3 <esc>:Gtags -r <cr><cr>
+
+map [Gtags]n :cn<cr>
+map [Gtags]p :cp<cr>
+map [Gtags]o :Gozilla<CR>
+
+"for cscope
+if has("cscope")
+" set csprg=/usr/local/bin/cscope
+" set csto=1
+" set cst
+" set nocsverb
+" " add any database in current directory
+" if filereadable("cscope.out")
+    " cs add cscope.out
+" endif
+" set csverb
+endif
+
+"inoremap  @o <ESC> :cs find c =expand("")<C-R>
+"nmap c :cs find c =expand("")
+nmap [Gtags]s :cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap [Gtags]g :cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap [Gtags]c :cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap [Gtags]t :cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap [Gtags]e :cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap [Gtags]f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap [Gtags]i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap [Gtags]d :cs find d <C-R>=expand("<cword>")<CR><CR>
+
+"set Cscope & quickfix
+set cscopequickfix=s-,c-,d-,i-,t-,e-
+"}}}2
+
+" => vim-shareborad {{{2
+" let g:shareboard_command = printf('pandoc -Ss --toc -m -c "%s"
+            " \ -r markdown_strict+fenced_code_blocks
+            " \ -w html5',
+            " \ expand("~/Library/Application\ Support/nvALT/custom.css"))
+
+let g:shareboard_command = printf('pandoc -Ss --toc -m -c "%s"
+            \ -r markdown
+            \ -w html5',
+            \ expand("~/Library/Application Support/nvALT/custom.css"))
+" }}}2
+" }}}
 
 " => vimrc.local{{{
 if has("mac" || "unix")
