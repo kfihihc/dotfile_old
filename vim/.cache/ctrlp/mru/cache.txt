@@ -1,0 +1,5 @@
+/Users/xiaobo/lib/python/test_xls.py
+/Users/xiaobo/lib/c_cpp/c_ch1_hello.c
+/Users/xiaobo/Dropbox/dotfiles/vimrc
+/Users/xiaobo/.vim/bundle/vim-commentary/doc/commentary.txt
+/Users/xiaobo/.vimrc.bak

@@ -1,3 +1,15 @@
 [submodule "vim/bundle/vim-scriptease"]
 	path = vim/bundle/vim-scriptease
 	url = https://github.com/tpope/vim-scriptease.git
+[submodule "vim/bundle/color-molokai"]
+	path = vim/bundle/color-molokai
+	url = https://github.com/tomasr/molokai.git
+[submodule "vim/bundle/ctrlp.vim"]
+	path = vim/bundle/ctrlp.vim
+	url = https://github.com/kien/ctrlp.vim.git
+[submodule "vim/bundle/NERDCommenter"]
+	path = vim/bundle/NERDCommenter
+	url = https://github.com/scrooloose/nerdcommenter.git
+[submodule "vim/bundle/NERDTree"]
+	path = vim/bundle/NERDTree
+	url = https://github.com/scrooloose/nerdtree.git

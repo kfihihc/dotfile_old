@@ -1,0 +1,16 @@
+vim
+vim/bundle
+vim/autoload
+vim/bundle/ctrlp.vim
+vim/bundle/ctrlp.vim/doc
+vim/bundle/color-molokai
+vim/bundle/vim-commentary
+vim/bundle/vim-scriptease
+vim/bundle/ctrlp.vim/plugin
+vim/bundle/ctrlp.vim/autoload
+vim/bundle/vim-commentary/doc
+vim/bundle/vim-scriptease/doc
+vim/bundle/color-molokai/colors
+vim/bundle/vim-commentary/plugin
+vim/bundle/vim-scriptease/plugin
+vim/bundle/ctrlp.vim/autoload/ctrlp

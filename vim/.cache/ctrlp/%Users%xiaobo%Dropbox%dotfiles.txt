@@ -1,0 +1,11 @@
+vimrc
+.gitignore
+vimrc.local
+.gitmodules
+vim/bundle/ctrlp.vim
+vim/bundle/color-molokai
+vim/autoload/pathogen.vim
+vim/bundle/vim-commentary
+vim/bundle/vim-scriptease
+vim/.cache/ctrlp/mru/cache.txt
+vim/.cache/ctrlp/hist/cache.txt
