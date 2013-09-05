@@ -1,4 +1,16 @@
 
+.vim
+vimrc
+pan
+vimrc
+.vim
+vimrc
+pandoc
+pan
+pando
+pandoc
+py
+vimrc
 hello
 vimrc
 vim

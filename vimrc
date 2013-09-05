@@ -108,6 +108,9 @@ nnoremap <silent> <leader>F :let word=expand("<cword>")<CR>:vsp<CR>:wincmd w<cr>
 " use ,gf to go to file in a vertical split
 nnoremap <silent> <leader>gf :vertical botright wincmd f<CR>
 
+" switch buffer with S-l and S-h
+map <S-l> :bn<cr>
+map <S-h> :bp<cr>
 " Close the current buffer
 map <leader>bb :bd<cr>
 " Close the curent buffer and goto previous buffer
@@ -139,6 +142,32 @@ map te :tabedit
 map tc :tabclose<cr> :bd<cr>  :bp<cr>
 map tm :tabmove
 
+func! Cwd()
+  let cwd = getcwd()
+  return "e " . cwd
+endfunc
+
+func! DeleteTillSlash()
+  let g:cmd = getcmdline()
+  if MySys() == "linux" || MySys() == "mac"
+    let g:cmd_edited = substitute(g:cmd, "\\(.*\[/\]\\).*", "\\1", "")
+  else
+    let g:cmd_edited = substitute(g:cmd, "\\(.*\[\\\\]\\).*", "\\1", "")
+  endif
+  if g:cmd == g:cmd_edited
+    if MySys() == "linux" || MySys() == "mac"
+      let g:cmd_edited = substitute(g:cmd, "\\(.*\[/\]\\).*/", "\\1", "")
+    else
+      let g:cmd_edited = substitute(g:cmd, "\\(.*\[\\\\\]\\).*\[\\\\\]", "\\1", "")
+    endif
+  endif
+  return g:cmd_edited
+endfunc
+
+func! CurrentFileDir(cmd)
+  return a:cmd . " " . expand("%:p:h") . "/"
+endfunc
+
 " switch to pwd
 map <leader>cd :cd %:p:h<cr>
 "}}}2 
@@ -158,7 +187,7 @@ set showmode                            " show vim mode
 set ruler                               " display the the cursor' position
 set cmdheight=2                         " command line height
 set directory-=.                        " don't store .swp file in current dir
-" set hid
+set hid
 set completeopt=longest,menu,preview
 set clipboard=unnamed
 set backspace=eol,start,indent
@@ -268,18 +297,18 @@ hi SpecialKey ctermfg=77 guifg=#654321
 " }}}2
 
 " => text display mode {{{2
-" " set column
-" " set colorcolumn=81
-" set cc=+1
-" " hi ColorColumn ctermbg=lightgrey guibg=white
+" set column
+" set colorcolumn=81
+set cc=+1
+" hi ColorColumn ctermbg=lightgrey guibg=white
 
 " " 设置断行
 " set lbr
 " set showbreak=↪
 
 " " 对超过 79 个字符的长行使用回绕
-" set wrap
-" set textwidth=80
+set wrap
+set textwidth=80
 " set formatoptions+=croqmB1
 
 " autocmd BufEnter *.{wiki,txt,md,mkd,markdown,pandoc} setlocal fo+=2
@@ -419,23 +448,23 @@ endif
 " => TagBar and powerline {{{2
 let g:Powerline_symbols = 'fancy'
 let g:Powerline_colorscheme='solarized256'
-" let g:Powerline_colorscheme='molokai'
 nmap <F8> :TagbarToggle<CR>
-let g:tagbar_ctags_bin='/usr/local/bin/ctags'
-let g:tagbar_autoshowtag = 1
-let g:tagbar_sort = 0
+" let g:tagbar_ctags_bin='/usr/local/bin/ctags -f - --format=2 --excmd=pattern --extra= --fields=nksaSmt myfile'
+" let g:tagbar_autoshowtag = 1
+" let g:tagbar_autoclose = 1
+" let g:tagbar_sort = 0
 
 " for txt
-let tagbar_type_txt = {
-  \ 'ctagstype' : 'txt',
-  \ 'kinds'     : [
-    \ 'c:content',
-    \ 'f:figures',
-    \ 't:tables'
-    \]
-  \}
+" let tagbar_type_txt = {
+  " \ 'ctagstype' : 'txt',
+  " \ 'kinds'     : [
+    " \ 'c:content',
+    " \ 'f:figures',
+    " \ 't:tables'
+    " \]
+  " \}
 " autocmd FileType c,cpp nested :TagbarOpen
-highlight TagbarScope guifg=Green ctermfg=Green
+" highlight TagbarScope guifg=Green ctermfg=Green
 " }}}2
 
 " => easy motion {{{2
@@ -611,7 +640,7 @@ let g:xptemplate_key ='<D-/>'
 let g:xptemplate_key_pum_only = '<S-Tab>'
 "}}}2
 
-" =>  ywvim {{{2
+" => ywvim {{{2
 let g:ywvim_ims=[
           \['zm', '鄭碼', 'zhengma.ywvim'],
           \['py', '拼音', 'pinyin.ywvim'],
@@ -723,6 +752,7 @@ let g:slimv_leader='\'
 " }}}2
 
 " => pandoc and markdown etc preview {{{2
+map <leader>mm :PandocHtmlOpen<cr>
 " }}}2
 
 " => pydoc.vim and rope.vim and python-mode {{{2
@@ -813,10 +843,10 @@ set cscopequickfix=s-,c-,d-,i-,t-,e-
             " \ -w html5',
             " \ expand("~/Library/Application\ Support/nvALT/custom.css"))
 
-let g:shareboard_command = printf('pandoc -Ss --toc -m -c "%s"
-            \ -r markdown
-            \ -w html5',
-            \ expand("~/Library/Application Support/nvALT/custom.css"))
+" let g:shareboard_command = printf('pandoc -Ss --toc -m -c "%s"
+            " \ -r markdown
+            " \ -w html5',
+            " \ expand("~/Library/Application Support/nvALT/custom.css"))
 " }}}2
 " }}}
 
