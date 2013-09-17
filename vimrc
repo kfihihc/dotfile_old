@@ -180,7 +180,8 @@ vnoremap > >gv
 " => interface for vim {{{
 " => normal interface setup for vim {{{2
 set scrolloff=5                         " screen line to keep at last
-set number                              " line number
+" set number                              " line number
+set relativenumber
 set mouse=a                             " mouse support
 set showcmd                             " show the command
 set showmode                            " show vim mode
@@ -258,27 +259,29 @@ language time zh_CN.UTF-8
 
 if has('gui_running')
     " set background=light
+    set background=dark
     set t_Co=256
 else
-    " set background=dark
+    set background=dark
 endif
 
-colorscheme molokai
-" colorschem solarized "MySand "zenburn "bensday "desert rainbow_neon lucius
+" colorscheme molokai
+colorschem solarized
+" "MySand "zenburn "bensday "desert rainbow_neon lucius
 
 " for molokai colorscheme
 let g:molokai_original = 1
 let g:rehash256 = 1
 
 " for solarized
-let g:solarized_termcolors   = 256
-" let g:solarized_termcolors = 16
+" let g:solarized_termcolors   = 256
+let g:solarized_termcolors = 16
 let g:solarized_termtrans    = 1
 " let g:solarized_bold       = 1
 " let g:solarized_underline  = 1
 " let g:solarized_italic     = 1
 let g:solarized_degrade      = 1
-" let g:solarized_visibility = "low"
+let g:solarized_visibility = "low"
 let g:solarized_hitrail      = 0
 let g:solarized_menu         = 1
 let g:solarized_contrast     = "normal"
@@ -287,7 +290,9 @@ let g:solarized_diffmode     = "normal"
 let g:solarized_menu         = 1
 
 if has("mac")
-    set guifont=Inconsolata\-dz\ for\ Powerline:h14
+    " set guifont=Inconsolata\-dz\ for\ Powerline:h14
+    " set guifont=Anonymous\ Pro:h16
+    set guifont=Source\ Code\ Pro:h15
     set guifontwide=宋体-方正超大字符集:h14
 endif
 
@@ -381,8 +386,6 @@ endfunction
 " => plugin setup {{{
 
 " plugin abstract key map{{{2
-nnoremap [DrawIt] <Nop>
-map <F10> [DrawIt]
 noremap [emotion] <Nop>
 noremap [emotion]<Space> f
 map f [emotion]
@@ -395,6 +398,8 @@ map <F5> [surround]
 " noremap [multicursor]<Space> n
 " map n [multicursor]
 
+nnoremap [DrawIt] <Nop>
+map <F10> [DrawIt]
 " stardict
 nmap <F9> :!sdcv "<cword>" <C-R>=expand("<cword>")<CR><CR>
 imap <F9> <ESC>:!sdcv "<cword>" <C-R>=expand("<cword>")<CR><CR>
@@ -402,6 +407,9 @@ imap <F9> <ESC>:!sdcv "<cword>" <C-R>=expand("<cword>")<CR><CR>
 
 " => NerdComment and NerdTree{{{2
 let NERDSpaceDelims=1
+map <D-/> <plug>NERDCommenterAlignLeft
+map <D-e> <plug>NERDCommenterAppend
+imap <D-i> <plug>NERDCommenterInsert
 
 let NERDTreeWinPos = "left" "where NERD tree window is placed on the screen
 let NERDTreeWinSize = 30 "size of the NERD tree
@@ -413,6 +421,8 @@ nmap <F7> <ESC>:NERDTreeToggle<cr>
 
 " => CtrlP {{{2
 map <leader>rf :CtrlPMRUFiles<cr>
+map <leader>l :CtrlPLine<cr>
+map <leader>f :CtrlPFunky<cr>
 let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn$\|.rvm$\|\.DS_Store$'
 let g:ctrlp_mruf_exclude = '/tmp/.*\|/temp/.*'
 let g:ctrlp_map = '<c-p>'
@@ -427,8 +437,9 @@ let g:ctrlp_user_command = {
   \ 1: ['.git', 'cd %s && git ls-files -c -o'],
   \ 2: ['.hg', 'hg --cwd %s locate -I .'],
   \ },
-  \ 'fallback': 'find %s -type f'
+  \ 'fallback': 'ag %s -l --nocolor -g ""'
   \ }
+  " \ 'fallback': 'find %s -type f'
 "}}}2
 
 " => ack with the silver searcher {{{2
@@ -446,25 +457,139 @@ endif
 " }}}2
 
 " => TagBar and powerline {{{2
-let g:Powerline_symbols = 'fancy'
-let g:Powerline_colorscheme='solarized256'
+" for lightline
+let g:lightline = {
+      \ 'colorscheme': 'wombat',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
+      \   'right': [[ 'lineinfo', 'syntastic' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype']]
+      \ },
+      \ 'component_function': {
+      \   'modified'     : 'MyModified',
+      \   'readonly'     : 'MyReadonly',
+      \   'fugitive'     : 'MyFugitive',
+      \   'filename'     : 'MyFilename',
+      \   'fileformat'   : 'MyFileformat',
+      \   'filetype'     : 'MyFiletype',
+      \   'fileencoding' : 'MyFileencoding',
+      \   'mode'         : 'MyMode',
+      \   'syntastic'    : 'SyntasticStatuslineFlag',
+      \   'ctrlpmark'    : 'CtrlPMark',
+      \ },
+      \ 'separator': { 'left': '⮀', 'right': '⮂' },
+      \ 'subseparator': { 'left': '⮁', 'right': '⮃' }
+      \ }
+
+function! MyModified()
+  return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+endfunction
+
+function! MyReadonly()
+  return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? '⭤' : ''
+endfunction
+
+function! MyFilename()
+  let fname = expand('%:t')
+  return fname == 'ControlP' ? g:lightline.ctrlp_item :
+        \ fname =~ '__Gundo\|NERD_tree' ? '' :
+        \ ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+        \ ('' != fname ? fname : '[No Name]') .
+        \ ('' != MyModified() ? ' ' . MyModified() : '')
+endfunction
+
+function! MyFugitive()
+  try
+    if expand('%:t') !~? 'Tagbar\|Gundo\|NERD' && &ft !~? 'vimfiler' && exists('*fugitive#head')
+      let mark = ''  " edit here for cool mark
+      let _ = fugitive#head()
+      return strlen(_) ? mark._ : ''
+    endif
+  catch
+  endtry
+  return ''
+endfunction
+
+function! MyFileformat()
+  return winwidth('.') > 70 ? &fileformat : ''
+endfunction
+
+function! MyFiletype()
+  return winwidth('.') > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
+endfunction
+
+function! MyFileencoding()
+  return winwidth('.') > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
+endfunction
+
+function! MyMode()
+  let fname = expand('%:t')
+  return fname == '__Tagbar__' ? 'Tagbar' :
+        \ fname == 'ControlP' ? 'CtrlP' :
+        \ fname == '__Gundo__' ? 'Gundo' :
+        \ fname == '__Gundo_Preview__' ? 'Gundo Preview' :
+        \ fname =~ 'NERD_tree' ? 'NERDTree' :
+        \ &ft == 'unite' ? 'Unite' :
+        \ &ft == 'vimfiler' ? 'VimFiler' :
+        \ &ft == 'vimshell' ? 'VimShell' :
+        \ winwidth('.') > 60 ? lightline#mode() : ''
+endfunction
+
+function! CtrlPMark()
+  if expand('%:t') =~ 'ControlP'
+    call lightline#link('iR'[g:lightline.ctrlp_regex])
+    return lightline#concatenate([g:lightline.ctrlp_prev, g:lightline.ctrlp_item
+          \ , g:lightline.ctrlp_next], 0)
+  else
+    return ''
+  endif
+endfunction
+
+let g:ctrlp_status_func = {
+  \ 'main': 'CtrlPStatusFunc_1',
+  \ 'prog': 'CtrlPStatusFunc_2',
+  \ }
+
+function! CtrlPStatusFunc_1(focus, byfname, regex, prev, item, next, marked)
+  let g:lightline.ctrlp_regex = a:regex
+  let g:lightline.ctrlp_prev = a:prev
+  let g:lightline.ctrlp_item = a:item
+  let g:lightline.ctrlp_next = a:next
+  return lightline#statusline(0)
+endfunction
+
+function! CtrlPStatusFunc_2(str)
+  return lightline#statusline(0)
+endfunction
+
+let g:tagbar_status_func = 'TagbarStatusFunc'
+
+function! TagbarStatusFunc(current, sort, fname, ...) abort
+    let g:lightline.fname = a:fname
+  return lightline#statusline(0)
+endfunction
+
+let g:unite_force_overwrite_statusline = 0
+let g:vimfiler_force_overwrite_statusline = 0
+let g:vimshell_force_overwrite_statusline = 0
+
+" for tagbar
 nmap <F8> :TagbarToggle<CR>
 " let g:tagbar_ctags_bin='/usr/local/bin/ctags -f - --format=2 --excmd=pattern --extra= --fields=nksaSmt myfile'
-" let g:tagbar_autoshowtag = 1
-" let g:tagbar_autoclose = 1
-" let g:tagbar_sort = 0
+let g:tagbar_autoshowtag = 1
+let g:tagbar_autoclose = 1
+let g:tagbar_sort = 0
 
 " for txt
-" let tagbar_type_txt = {
-  " \ 'ctagstype' : 'txt',
-  " \ 'kinds'     : [
-    " \ 'c:content',
-    " \ 'f:figures',
-    " \ 't:tables'
-    " \]
-  " \}
+let tagbar_type_txt = {
+  \ 'ctagstype' : 'txt',
+  \ 'kinds'     : [
+    \ 'c:content',
+    \ 'f:figures',
+    \ 't:tables'
+    \]
+  \}
 " autocmd FileType c,cpp nested :TagbarOpen
-" highlight TagbarScope guifg=Green ctermfg=Green
+highlight TagbarScope guifg=Green ctermfg=Green
 " }}}2
 
 " => easy motion {{{2
@@ -618,33 +743,44 @@ imap [surround]s <ESC>viwSsWi
 "}}}2
 
 " => Minibuffer plugin {{{2
-let g:miniBufExplModSelTarget       = 1
-let g:miniBufExplorerMoreThanOne    = 0
-let g:miniBufExplUseSingleClick     = 1
-let g:miniBufExplMapWindowNavVim    = 1
-"let g:miniBufExplVSplit            = 25
-"let g:miniBufExplSplitBelow=1
-let g:miniBufExplMapCTabSwitchBufs  = 1
-" let g:miniBufExplCheckDupeBufs = 0
-" let g:miniBufExplForceSyntaxEnable = 1
+let g:miniBufExplModSelTarget          = 1
+let g:miniBufExplBuffersNeeded         = 1
+let g:miniBufExplUseSingleClick        = 1
+let g:miniBufExplMapWindowNavVim       = 1
+"let g:miniBufExplVSplit               = 25
+let g:miniBufExplMapCTabSwitchBufs     = 1
+" let g:miniBufExplCheckDupeBufs       = 0
+" let g:miniBufExplForceSyntaxEnable   = 1
+" let g:miniBufExplBRSplit               = 1        " put to right or vertical
+let g:bufExplorerSortBy                = "name"
+let g:did_minibufexplorer_syntax_inits = 1
+hi MBEChanged guibg=darkblue ctermbg=darkblue "termbg=white
 
-let g:bufExplorerSortBy = "name"
+" autocmd BufRead,BufNew :call MBEOpen
 
-" autocmd BufRead,BufNew :call UMiniBufExplorer
+map <leader>u :MBEToggle<cr>
 
-map <leader>u :TMiniBufExplorer<cr>
+" focus the minibuffer windows
+map <leader>b :MBEFocus<cr>
+" navigate the buffer
+noremap <C-TAB>   :MBEbn<CR>
+noremap <C-S-TAB> :MBEbp<CR>
 "}}}2
 
 " => xptemplate {{{2
-let g:xptemplate_key ='<D-/>'
+let g:xptemplate_key ='<D-\>'
+" let g:xptemplate_key ='<Tab>'
 let g:xptemplate_key_pum_only = '<S-Tab>'
 "}}}2
 
 " => ywvim {{{2
 let g:ywvim_ims=[
-          \['zm', '鄭碼', 'zhengma.ywvim'],
-          \['py', '拼音', 'pinyin.ywvim'],
+          \['zm', '鄭碼', 'zhengma.ywvim']
           \]
+" let g:ywvim_ims=[
+"           \['zm', '鄭碼', 'zhengma.ywvim'],
+"           \['py', '拼音', 'pinyin.ywvim'],
+"           \]
 let g:ywvim_zm = { 'helpim':'py' }
 
 let g:ywvim_zhpunc = 1 "中文标点输入开关
@@ -753,6 +889,7 @@ let g:slimv_leader='\'
 
 " => pandoc and markdown etc preview {{{2
 map <leader>mm :PandocHtmlOpen<cr>
+let g:pandoc_no_folding = 1
 " }}}2
 
 " => pydoc.vim and rope.vim and python-mode {{{2
