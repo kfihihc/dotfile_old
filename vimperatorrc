@@ -1,0 +1,101 @@
+" vim set ft=vim ts=4 "
+
+" let gmapleader = ","
+" map <silent> <leader>ss :source ~/.vimperatorrc<cr>
+highlight StatusLine color:#18ed18; background:#FFFFF00;
+
+" status line rss
+javascript <<EOF
+(function(){
+var feedPanel = document.createElement("statusbarpanel");
+feedPanel.setAttribute("id", "feed-panel-clone");
+feedPanel.appendChild(document.getElementById("feed-button"));
+feedPanel.firstChild.setAttribute("style", "padding: 0; max-height: 16px;");
+document.getElementById("status-bar")
+.insertBefore(feedPanel, document.getElementById("security-button"));
+})();
+EOF
+
+" Maine_Coon
+" set mainecoon=mu
+
+"set editor=/Applications/Vim.app/Contents/MacOS/Vim\ -f-g
+set editor="/usr/local/bin/gvim -f"
+
+map ,b <ESC>:bmarks! 
+map ,ss <ESC>:source ~/.vimperatorrc<cr>
+let g:smooziee_scroll_amount="150"
+let g:smooziee_scroll_interval="10"
+
+"防止在最后一个tab的时候按d退出firefox{
+set! browser.tabs.closeWindowWithLastTab=false
+
+" google reader and gmail ignore
+autocmd LocationChange .* :js modes.passAllKeys = /mail\.google\.com/.test(buffer.URL) || /google\.com\/reader\//.test(buffer.URL) || /inoreader\.com/.test(buffer.URL) | /theoldreader\.com/.test(buffer.URL)
+" use feedSomeKeys instead it
+"command! -nargs=+ lazygmail autocmd VimperatorEnter .* <args>
+"command! -nargs=+ lazyreader autocmd VimperatorEnter .* <args>
+"lazygmail fmaps -u='mail\.google\.com/mail' c / j k n p o u e x s r a # [ ] ? gi gs gt gd ga gc
+"lazyreader fmaps -u='www\.google\.com/reader/view' c / j k n p o u e x s r a # [ ] ? gi gs gt gd ga gc
+
+" table
+nnoremap <C-h> gT
+nnoremap <C-l> gt
+
+" back and forward
+map h H
+map l L
+
+" up down
+cnoremap <C-k> <Up>
+cnoremap <C-j> <Down>
+
+" ]]/[[转到上一页/下一页{
+"下一页
+set nextpattern^='\s*[下后][一]?[页张个篇章]\s*','››'
+"上一页
+set previouspattern^='\s*[上前][一]?[页张个篇章]\s*','‹‹'
+
+"命令行模式禁用输入法
+style -name commandline-ime http://*,https://* input,textarea {ime-mode: active;}
+style -name commandline-ime chrome://* #dactyl-commandline-command input , #dactyl-statusline-field-commandline-command input {ime-mode: inactive;}
+
+"实现快速的重启,查看下载,查看扩展等{
+" noremap <leader>r :restart<cr>
+" command-shitf-a
+noremap <leader>a :addons<cr>
+" command-j
+noremap <leader>d :downloads<cr>
+
+"快速改变页面编码{
+noremap <leader>eu :set encoding=UTF-8<CR>
+noremap <leader>eg :set encoding=GB2312<CR>
+noremap <leader>ek :set encoding=GB18030<CR>
+noremap <leader>eb :set encoding=Big5<CR>
+
+"搜索选中的字符串,并可选搜索引擎{
+command! -nargs=? -complete=search SearchSelect exe 't <args> ' + content.getSelection()
+map S :SearchSelect<Space>
+" search anyway
+inoremap <C-k> <Esc><C-k>
+
+""""""""""""""""""""""""""""""""""""""""
+"=> qmarks set up
+" goX open X current tab
+" gnX open X new tab
+""""""""""""""""""""""""""""""""""""""""
+" readability
+qmark n javascript:(%28function%28%29%7Bwindow.baseUrl%3D%27http%3A//www.readability.com%27%3Bwindow.readabilityToken%3D%27wr93ZbhNRS9H2aUBzdpxdNfxBD2CrXj3XqnfmYSN%27%3Bvar%20s%3Ddocument.createElement%28%27script%27%29%3Bs.setAttribute%28%27type%27%2C%27text/javascript%27%29%3Bs.setAttribute%28%27charset%27%2C%27UTF-8%27%29%3Bs.setAttribute%28%27src%27%2CbaseUrl%2B%27/bookmarklet/read.js%27%29%3Bdocument.documentElement.appendChild%28s%29%3B%7D%29%28%29)
+
+qmark l javascript:(%28function%28%29%7Bwindow.baseUrl%3D%27http%3A//www.readability.com%27%3Bwindow.readabilityToken%3D%27wr93ZbhNRS9H2aUBzdpxdNfxBD2CrXj3XqnfmYSN%27%3Bvar%20s%3Ddocument.createElement%28%27script%27%29%3Bs.setAttribute%28%27type%27%2C%27text/javascript%27%29%3Bs.setAttribute%28%27charset%27%2C%27UTF-8%27%29%3Bs.setAttribute%28%27src%27%2CbaseUrl%2B%27/bookmarklet/save.js%27%29%3Bdocument.documentElement.appendChild%28s%29%3B%7D%29%28%29)
+
+qmark k javascript:(%28function%28%29%7Bwindow.baseUrl%3D%27http%3A//www.readability.com%27%3Bwindow.readabilityToken%3D%27wr93ZbhNRS9H2aUBzdpxdNfxBD2CrXj3XqnfmYSN%27%3Bvar%20s%3Ddocument.createElement%28%27script%27%29%3Bs.setAttribute%28%27type%27%2C%27text/javascript%27%29%3Bs.setAttribute%28%27charset%27%2C%27UTF-8%27%29%3Bs.setAttribute%28%27src%27%2CbaseUrl%2B%27/bookmarklet/send-to-kindle.js%27%29%3Bdocument.documentElement.appendChild%28s%29%3B%7D%29%28%29)
+
+" youdao translation
+qmark t javascript:%20void((function()%20{var%20element%20=%20document.createElement('script');element.id%20=%20'outfox_seed_js';element.charset%20=%20'utf-8',element.setAttribute('src',%20'http://fanyi.youdao.com/web2/seed.js?'%20+%20Date.parse(new%20Date()));document.body.appendChild(element);})())
+
+" google qmarks
+qmark m https://mail.google.com
+" qmark r https://www.google.com/reader/view
+qmark r https://www.inoreader.com/
+
