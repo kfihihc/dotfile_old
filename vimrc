@@ -116,7 +116,7 @@ map <leader>bb :bd<cr>
 " Close the curent buffer and goto previous buffer
 if has("mac")
     map <D-w> :bd<cr> :bp<cr>
-elseif has(linux || win32)
+elseif has("linux" || "win32")
     map <M-w> :bd<cr> :bp<cr>
 endif
 " Close all the buffers
